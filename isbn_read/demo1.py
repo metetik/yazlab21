@@ -26,7 +26,7 @@ def find_orientation(img):
     else:
         rows,cols = img.shape
     
-    for i in range(0,3):
+    for i in range(3):
         text = image_to_string(img)
         if "ISBN" in text:
             #cv2.imshow('rotation',img)
@@ -154,10 +154,37 @@ def isbn_read(img):
     img_oriented = find_orientation(thresh)
     if type(img_oriented) != type(None):
         text = image_to_string(img_oriented)
-        return text
+        lines = text.split("\n")
+        isbn = ""
+        for i in range(len(lines)):
+            #print(str(i)+".satır : "+lines[i])
+            if "ISBN" in lines[i]:
+                #print(">>>>"+lines[i]+"<<<<")
+                line = lines[i]
+                break
+        line = line.replace("i","1")
+        line = line.replace("b","6")
+
+        if line.find("ISBN-13") != -1:
+            for i in range(line.find("ISBN-13")+6,len(line)):
+                if line[i].isdigit():
+                    isbn += line[i]
+                #print(line[i],end="")
+            #print("isbn : "+isbn)
+        elif line.find("ISBN") != -1:
+            for i in range(line.find("ISBN")+4,len(line)):
+                if line[i].isdigit():
+                    isbn += line[i]
+                #print(line[i],end="")
+            #print("isbn : "+isbn)
+        
+        if len(isbn) == 13:
+            return isbn
+        else:
+            return "None"
     else:
         return "None"
-    
+
 image_names = os.listdir("../data/")
 
 for imname in image_names:
