@@ -26,4 +26,5 @@ urlpatterns = [
     path('kitap_arama/',kitap_arama,name="kitap_arama"),
     path('kitap_alma/',kitap_alma,name="kitap_alma"),
     path('kitap_verme/',kitap_verme,name="kitap_verme"),
+    path('cikis/',cikis,name="cikis"),
 ]

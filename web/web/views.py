@@ -1,5 +1,5 @@
 from django.shortcuts import render,HttpResponse,Http404,redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from .forms import LoginForm
 
 def home(request):
@@ -18,7 +18,6 @@ def home(request):
             return redirect('home')
 
         return render(request, 'login.html', {'form' : form})
-
 def kitap_ekle(request):#admin
     if request.user.is_superuser:
         return render(request,"kitap_ekle.html")
@@ -49,4 +48,7 @@ def kitap_verme(request):#user
         return render(request,"kitap_verme.html")
     else:
         return Http404
+def cikis(request):
+    logout(request)
+    return redirect("home")
 # Create your views here.
