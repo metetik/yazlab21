@@ -20,4 +20,10 @@ from .views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home,name="home"),
+    path('kitap_ekle/',kitap_ekle,name="kitap_ekle"),
+    path('kullanici_listele/',kullanici_listele,name="kullanici_listele"),
+    path('zaman_atla/',zaman_atla,name="zaman_atla"),
+    path('kitap_arama/',kitap_arama,name="kitap_arama"),
+    path('kitap_alma/',kitap_alma,name="kitap_alma"),
+    path('kitap_verme/',kitap_verme,name="kitap_verme"),
 ]
