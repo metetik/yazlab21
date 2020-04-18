@@ -1,0 +1,48 @@
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" style="background-color: #e3f2fd;">
+  <a class="navbar-brand" href="{% url 'home' %}">Kütüphane</a>
+  <!--
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  -->
+  {% if request.user.is_superuser %}
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav navbar-left">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'kitap_ekle' %}">Kitap Ekle</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'zaman_atla' %}">Zaman Atla</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'kullanici_listele' %}">Kullanıcıları Listele</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto">  
+        <li class="nav-item">
+            <a class="nav-link" href="">Çıkış Yap</a>
+        </li>
+      </ul>
+    </div>
+  {% elif request.user.is_authenticated %}
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'kitap_arama' %}">Kitap Ara</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'kitap_alma' %}">Kitap Al</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'kitap_verme' %}">Kitap Ver</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto">  
+        <li class="nav-item">
+            <a class="nav-link" href="">Çıkış Yap</a>
+        </li>
+      </ul>
+    </div>
+  {% endif %}
+  
+</nav>
