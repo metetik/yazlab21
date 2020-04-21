@@ -191,8 +191,8 @@ for imname in image_names:
     path = "../data/"+imname
     print(path)
     img = cv2.imread(path)
-    text = isbn_read(img)
-    print(text)
+    #cv2.imshow("pencere",img)
+    #cv2.waitKey(0)
+    isbn = isbn_read(img)
+    print(isbn)
     print(30*"#"+"\n"+30*"#")
-    #img = find_orientation(img)
-    #print(type(img))"""
