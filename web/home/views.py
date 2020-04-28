@@ -1,7 +1,14 @@
 from django.shortcuts import render,HttpResponse,Http404,redirect
 from django.contrib.auth import authenticate, login, logout
-from .forms import LoginForm
+from .forms import *
+from .models import *
+import logging
+from .functions import resim_oku
 
+initial = {
+    "isbn" : "1",
+    "kitap_adi" : "2"
+}
 def home(request):
     if request.user.is_superuser:
         return render(request,"admin_home.html")
@@ -9,7 +16,6 @@ def home(request):
         return render(request,"user_home.html")
     else:
         form = LoginForm(request.POST or None)
-        
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
@@ -18,11 +24,41 @@ def home(request):
             return redirect('home')
 
         return render(request, 'login.html', {'form' : form})
+
+def isbn_oku(request):#admin
+    if type(request) != type("") and request.user.is_superuser:
+        form1 = KitapEkleForm1(request.POST or None,request.FILES or None)
+        alert = None
+        if form1.is_valid():
+            print("a")
+            resim_adi = form1.cleaned_data["resim"]
+            if resim_adi:
+                isbn = resim_oku(resim_adi.name)
+                print(isbn)
+                if isbn == "None":
+                    alert = "Resim okunamadı"
+                else:
+                    initial["isbn"] = isbn
+                    return redirect("kitap_ekle")
+            
+        return render(request, 'isbn_oku.html', {'form' : form1,'alert' : alert})
+    return Http404
 def kitap_ekle(request):#admin
-    if request.user.is_superuser:
-        return render(request,"kitap_ekle.html")
-    else:
-        return Http404
+    if type(request) == type("") or request.user.is_superuser:
+        form2 = KitapEkleForm2(request.POST or None,initial=initial)
+    
+        if form2.is_valid():
+            print("b")
+            ktp = Kitap()
+            ktp.isbn = form2.cleaned_data["isbn"]
+            ktp.kitap_adi = form2.cleaned_data["kitap_adi"]
+            ktp.kullanici = None
+            ktp.alinma_tarihi = None
+            ktp.save()
+
+            return redirect("isbn_oku")
+        return render(request, 'kitap_ekle.html', {'form' : form2})
+    return Http404    
 def zaman_atla(request):#admin
     if request.user.is_superuser:
         return render(request,"zaman_atla.html")

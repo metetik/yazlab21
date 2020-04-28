@@ -8,11 +8,15 @@
         <div class="row justify-content-center align-items-cente">
             <di class="col-md-6" >
                 <div class="col-md-12">
-                    <h1 text-center text-info>Kitap Ekle</h1>
+                    <h1 text-center text-info>ISBN Oku</h1>
                     <form class="form" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         {{ form|crispy }}
-                        <input class="btn btn-primary" type="submit" value="Ekle">
+                        <input class="btn btn-primary" type="submit" value="Oku">
+                        <br><br>
+                        {% if alert %}
+                        <div class="alert alert-danger" role="alert">{{alert}}</div>
+                        {% endif %}
                     </form>
                 </div>
             </div>

@@ -148,7 +148,12 @@ def th_demo():
     print(ths)
     #[14, 13, 14, 14, 8, 12, 3, 8, 15, 17, 15] --> Otsu's thresholding is the best
 
-def isbn_read(img):
+def isbn_read(imname):
+    path = "../data/"+imname
+    print(path)
+    img = cv2.imread(path)
+    #cv2.imshow("pencere",img)
+    #cv2.waitKey(0)  
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     ret2,thresh = cv2.threshold(gray,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
     img_oriented = find_orientation(thresh)
@@ -181,18 +186,15 @@ def isbn_read(img):
         if len(isbn) == 13:
             return isbn
         else:
-            return "None"
+            return "!=13\t"+isbn
     else:
         return "None"
 
 image_names = os.listdir("../data/")
 
 for imname in image_names:
-    path = "../data/"+imname
-    print(path)
-    img = cv2.imread(path)
     #cv2.imshow("pencere",img)
     #cv2.waitKey(0)
-    isbn = isbn_read(img)
+    isbn = isbn_read(imname)
     print(isbn)
     print(30*"#"+"\n"+30*"#")

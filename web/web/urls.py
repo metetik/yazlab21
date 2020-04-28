@@ -16,15 +16,20 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from home.views import *
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home,name="home"),
-    path('kitap_ekle/',kitap_ekle,name="kitap_ekle"),
     path('kullanici_listele/',kullanici_listele,name="kullanici_listele"),
     path('zaman_atla/',zaman_atla,name="zaman_atla"),
     path('kitap_arama/',kitap_arama,name="kitap_arama"),
     path('kitap_alma/',kitap_alma,name="kitap_alma"),
+    path('isbn_oku/',isbn_oku,name="isbn_oku"),
+    path('kitap_ekle/',kitap_ekle,name="kitap_ekle"),
     path('kitap_verme/',kitap_verme,name="kitap_verme"),
     path('cikis/',cikis,name="cikis"),
 ]
+
+urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
