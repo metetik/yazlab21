@@ -12,8 +12,8 @@ from django.contrib.auth.models import User
 locale.setlocale(locale.LC_ALL, '')
 
 initial = {
-    "isbn" : "1",
-    "kitap_adi" : "2"
+    "isbn" : "",
+    "kitap_adi" : ""
 }
 def home(request):
     if request.user.is_superuser:
@@ -96,12 +96,101 @@ def kullanici_listele(request):#admin
         return Http404
 def kitap_arama(request):#user
     if not request.user.is_superuser and request.user.is_authenticated:
-        return render(request,"kitap_arama.html")
+        form = KitapAraForm(request.POST or None)
+        kitaplar = Kitap.objects.all()
+        content = dict()
+        
+        if form.is_valid():
+            kitap_listesi = list()
+            sorgu = form.cleaned_data["arama"]
+
+            for kitap in kitaplar:
+                if sorgu in kitap.kitap_adi:
+                    kitap_listesi.append(kitap)
+                elif sorgu in kitap.isbn:
+                    kitap_listesi.append(kitap)
+            
+            if len(kitap_listesi) == 0:
+                content["kitaplar"] = None
+            else:
+                content["kitaplar"] = kitap_listesi
+            
+            form.clean()
+            return render(request,"kitap_arama.html",{"form" : form,"content" : content})
+        return render(request,"kitap_arama.html",{"form" : form,"content" : content})
     else:
         return Http404
 def kitap_alma(request):#user
     if not request.user.is_superuser and request.user.is_authenticated:
-        return render(request,"kitap_alma.html")
+        kitaplar = Kitap.objects.all()
+        form = KitapAlForm(request.POST or None)
+        
+        if form.is_valid():
+            alert = None
+            isbn = form.cleaned_data["isbn"]
+            
+            if not Kitap.objects.filter(isbn=isbn).exists():#böyle bir kitap yoksa
+                alert = {
+                    "class" : "danger",
+                    "message" : "isbn numarası hatalı!"
+                }
+                form.clean()
+
+                return render(request,"kitap_alma.html",{"kitaplar" : kitaplar,"form" : form,"alert" : alert})
+            else:#varsa
+                kitap = Kitap.objects.get(isbn=isbn)
+                kullanici = request.user
+                print(kitap.kullanici) 
+                if not kitap.kullanici:#raftaysa
+                    kullanici_kitaplar = Kitap.objects.filter(kullanici = kullanici.id)
+                    kullanici_kitap_sayisi = len(kullanici_kitaplar)
+                    
+                    if kullanici_kitap_sayisi >= 3:
+                        alert = {
+                        "class" : "danger",
+                        "message" : "Sistemden en fazla üç kitap alabilirsiniz"
+                        }
+                        return render(request,"kitap_alma.html",{"kitaplar" : kitaplar,"form" : form,"alert" : alert})
+                    elif kullanici_kitap_sayisi > 0:
+                        for kitap1 in kullanici_kitaplar: 
+                            sure = (Zaman.objects.get(id=1).tarih - kitap1.alinma_tarihi).days
+                            
+                            if sure >= 7:
+                                alert = {
+                                    "class" : "danger",
+                                    "message" : "üzerinizde teslim tarihi geçmiş kitap var, yeni kitap alamazsınız"
+                                }
+                                return render(request,"kitap_alma.html",{"kitaplar" : kitaplar,"form" : form,"alert" : alert})
+                        
+                        kitap.kullanici = kullanici
+                        kitap.alinma_tarihi = Zaman.objects.get(id=1).tarih
+                        kitap.save()
+                        alert = {
+                                "class" : "success",
+                                "message" : "Kitap bir haftalığına üzerinize tanımlandı"
+                        }
+                        return render(request,"kitap_alma.html",{"kitaplar" : kitaplar,"form" : form,"alert" : alert})
+                    else:
+                        kitap.kullanici = kullanici
+                        kitap.alinma_tarihi = Zaman.objects.get(id=1).tarih
+                        kitap.save()
+                        alert = {
+                                "class" : "success",
+                                "message" : "Kitap bir haftalığına üzerinize tanımlandı"
+                        }
+                        return render(request,"kitap_alma.html",{"kitaplar" : kitaplar,"form" : form,"alert" : alert})
+
+                    return render(request,"kitap_alma.html",{"kitaplar" : kitaplar,"form" : form,"alert" : alert})
+                else:#kitap alınmışsa
+                    alert = {
+                        "class" : "danger",
+                        "message" : "kitap zaten alınmış!"
+                    }
+                    
+                    return render(request,"kitap_alma.html",{"kitaplar" : kitaplar,"form" : form,"alert" : alert})
+                
+            return render(request,"kitap_alma.html",{"kitaplar" : kitaplar,"form" : form,"alert" : alert})
+        return render(request,"kitap_alma.html",{"kitaplar" : kitaplar,"form" : form})
     else:
         return Http404
 def kitap_verme(request):#user

@@ -30,11 +30,11 @@
 {% endblock style %}
 {% block body %}
     {% include 'includes/navbar.html' %}
-    <h1>Kullanıcı Listeleme</h1>
     <div class="container">
         <div class="row justify-content-center align-items-cente">
             <di class="col-md-6" >
                 <div class="col-md-12">
+                <h1>Kullanıcı Listeleme</h1>
                     <div class="list-group">
                     {% for kullanici in kullanicilar %}
                         <a href="#" class="list-group-item text-decoration-none" style = >{{kullanici.username}}</a>
@@ -53,7 +53,7 @@
                                     {% if kitap.kullanici == kullanici %}
                                         <tr>
                                         <th scope="row">{{kitap.id}}</th>
-                                        <td>{{kitap.ISBN}}</td>
+                                        <td>{{kitap.isbn}}</td>
                                         <td>{{kitap.kitap_adi}}</td>
                                         <td>{{kitap.alinma_tarihi}}</td>
                                         </tr>
@@ -63,39 +63,6 @@
                                 </table>
                         </div>
                     {% endfor %}
-                        
-                        <div class="list-group">
-                            <table class="table list-group-item">
-                                <thead>
-                                    <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">First</th>
-                                    <th scope="col">Last</th>
-                                    <th scope="col">Handle</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                    <th scope="row">1</th>
-                                    <td>Mark</td>
-                                    <td>Otto</td>
-                                    <td>@mdo</td>
-                                    </tr>
-                                    <tr>
-                                    <th scope="row">2</th>
-                                    <td>Jacob</td>
-                                    <td>Thornton</td>
-                                    <td>@fat</td>
-                                    </tr>
-                                    <tr>
-                                    <th scope="row">3</th>
-                                    <td>Larry</td>
-                                    <td>the Bird</td>
-                                    <td>@twitter</td>
-                                    </tr>
-                                </tbody>
-                                </table>
-                        </div>
                     </div>
                 </div>
             </div>

@@ -9,7 +9,7 @@
             <di class="col-md-6" >
                 <div class="col-md-12">
                     <h1 text-center text-info>Kitap Ekle</h1>
-                    <form class="form" method="POST" enctype="multipart/form-data">
+                    <form class="form" method="POST">
                         {% csrf_token %}
                         {{ form|crispy }}
                         <input class="btn btn-primary" type="submit" value="Ekle">

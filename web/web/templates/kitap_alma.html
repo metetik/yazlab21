@@ -1,6 +1,52 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 {% block title %}Kitap Alma{% endblock title %}
 {% block body %}
     {% include 'includes/navbar.html' %}
-    <h1>Kitap Al<h1>
+    <div class="container">
+        <div class="row justify-content-center align-items-cente">
+            <di class="col-md-6" >
+                <div class="col-md-12">
+                    {% if alert %}
+                        <div class="alert alert-{{alert.class}}" role="alert">{{alert.message}}</div>
+                    {% endif %}
+                    <h1>Kitap Alma</h1>
+                    <div class="list-group">
+                        <div class="list-group-item">
+                            <h3>Raftaki kitaplar</h3>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">id</th>
+                                        <th scope="col">ISBN</th>
+                                        <th scope="col">Kitap Adı</th>
+                                        <th scope="col">Alınma Tarihi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for kitap in kitaplar %}
+                                        {% if not kitap.kullanici %}
+                                            <tr>
+                                            <th scope="row">{{kitap.id}}</th>
+                                            <td>{{kitap.isbn}}</td>
+                                            <td>{{kitap.kitap_adi}}</td>
+                                            <td>{{kitap.alinma_tarihi}}</td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <hr>
+                            <form class="form" method="POST">
+                                {% csrf_token %}
+                                {{ form|crispy }}
+                                <input class="btn btn-primary" type="submit" value="Al">
+                                <br><br>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock body %}

@@ -1,6 +1,50 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 {% block title %}Kitap Arama{% endblock title %}
+
 {% block body %}
     {% include 'includes/navbar.html' %}
-    <h1>Kitap Arama<h1>
+    <div class="container">
+        <div class="row justify-content-center align-items-cente">
+            <di class="col-md-6" >
+                <div class="col-md-12">
+                    <h1 text-center text-info>Kitap Arama</h1>
+                    <form class="form" method="POST">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <input class="btn btn-primary" type="submit" value="Ara">
+                    </form>
+                    <br>
+                    {% if content.kitaplar %}
+                         <table class="table list-group-item">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">id</th>
+                                        <th scope="col">ISBN</th>
+                                        <th scope="col">Kitap Adı</th>
+                                        <th scope="col">Kimde</th>
+                                        <th scope="col">Alınma Tarihi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for kitap in content.kitaplar %}
+                                    <tr>
+                                    <th scope="row">{{kitap.id}}</th>
+                                    <td>{{kitap.isbn}}</td>
+                                    <td>{{kitap.kitap_adi}}</td>
+                                    {% if not kitap.kullanici %}
+                                        <td>Rafta</td>
+                                    {% else %}
+                                        <td>{{kitap.kullanici}}</td>
+                                    {% endif %}
+                                    <td>{{kitap.alinma_tarihi}}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                                </table>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock body %}
