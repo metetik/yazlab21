@@ -11,7 +11,11 @@ from django.contrib.auth.models import User
 
 locale.setlocale(locale.LC_ALL, '')
 
-initial = {
+initial1 = {
+    "isbn" : "",
+    "kitap_adi" : ""
+}
+initial2 = {
     "isbn" : "",
     "kitap_adi" : ""
 }
@@ -30,8 +34,7 @@ def home(request):
             return redirect('home')
 
         return render(request, 'login.html', {'form' : form})
-
-def isbn_oku(request):#admin
+def isbn_oku1(request):#admin
     if type(request) != type("") and request.user.is_superuser:
         form1 = KitapEkleForm1(request.POST or None,request.FILES or None)
         alert = None
@@ -43,14 +46,14 @@ def isbn_oku(request):#admin
                 if isbn == "None":
                     alert = "Resim okunamadı"
                 else:
-                    initial["isbn"] = isbn
+                    initial1["isbn"] = isbn
                     return redirect("kitap_ekle")
             
-        return render(request, 'isbn_oku.html', {'form' : form1,'alert' : alert})
+        return render(request, 'isbn_oku1.html', {'form' : form1,'alert' : alert})
     return Http404
 def kitap_ekle(request):#admin
     if type(request) == type("") or request.user.is_superuser:
-        form2 = KitapEkleForm2(request.POST or None,initial=initial)
+        form2 = KitapEkleForm2(request.POST or None,initial=initial1)
     
         if form2.is_valid():
             print("b")
@@ -193,11 +196,58 @@ def kitap_alma(request):#user
         return render(request,"kitap_alma.html",{"kitaplar" : kitaplar,"form" : form})
     else:
         return Http404
+def isbn_oku2(request):#user
+    if type(request) != type("") and not request.user.is_superuser and request.user.is_authenticated:
+        form1 = KitapEkleForm1(request.POST or None,request.FILES or None)
+        alert = None
+        if form1.is_valid():
+            resim_adi = form1.cleaned_data["resim"]
+            if resim_adi:
+                isbn = resim_oku(resim_adi.name)
+                print(isbn)
+                if isbn == "None":
+                    alert = "Resim okunamadı"
+                else:
+                    initial2["isbn"] = isbn
+                    return redirect("kitap_verme")
+            
+        return render(request, 'isbn_oku1.html', {'form' : form1,'alert' : alert})
+    return Http404
 def kitap_verme(request):#user
     if not request.user.is_superuser and request.user.is_authenticated:
-        return render(request,"kitap_verme.html")
+        isbn = initial2["isbn"]
+        alert = None
+        form = None
+        if not Kitap.objects.filter(isbn=isbn).exists():
+            alert = "Kitap bulunamadı"
+            return render(request, 'kitap_verme.html', {'form' : form,'alert' : alert})
+        
+        else:
+            kitap = Kitap.objects.get(isbn=isbn)
+            
+            if not kitap.kullanici:
+                alert = "Bu kitap zaten rafta"
+                return render(request, 'kitap_verme.html', {'form' : form,'alert' : alert})
+            elif kitap.kullanici.username != request.user.username:
+                alert = "Bu kitap başkasının üzerinde"
+                return render(request, 'kitap_verme.html', {'form' : form,'alert' : alert})
+
+        initial2["kitap_adi"] = Kitap.objects.get(isbn=isbn).kitap_adi
+
+        form = KitapVerForm(request.POST or None,initial=initial2)
+        
+        if form.is_valid():
+            kitap = Kitap.objects.get(isbn=isbn)
+            
+            kitap.kullanici = None
+            kitap.alinma_tarihi = None
+            kitap.save()
+
+            return redirect("isbn_oku2")
+        return render(request, 'kitap_verme.html', {'form' : form,'alert' : alert})
     else:
         return Http404
+
 def cikis(request):
     logout(request)
     return redirect("home")

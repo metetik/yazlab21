@@ -1,23 +1,23 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% block title %}Kitap Verme{% endblock title %}
+
 {% block body %}
     {% include 'includes/navbar.html' %}
     <div class="container">
         <div class="row justify-content-center align-items-cente">
             <di class="col-md-6" >
                 <div class="col-md-12">
-                    {% if alert %}
-                        <div class="alert alert-danger" role="alert">{{alert}}</div>
-                    {% endif %}
-                    {% if form %}
-                        <h1 text-center text-info>Kitap Verme</h1>
-                        <form class="form" method="POST">
+                    <h1 text-center text-info>ISBN Oku</h1>
+                    <form class="form" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         {{ form|crispy }}
-                        <input class="btn btn-primary" type="submit" value="Ver">
-                        </form>
-                    {% endif %}
+                        <input class="btn btn-primary" type="submit" value="Oku">
+                        <br><br>
+                        {% if alert %}
+                        <div class="alert alert-danger" role="alert">{{alert}}</div>
+                        {% endif %}
+                    </form>
                 </div>
             </div>
         </div>

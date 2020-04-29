@@ -33,4 +33,8 @@ class KitapAraForm(forms.Form):
 
 class KitapAlForm(forms.Form):
     isbn = forms.CharField(max_length=13,label="Alınacak kitabın isbn numarası")
+
+class KitapVerForm(forms.Form):
+    isbn = forms.CharField(max_length=13,disabled=True)
+    kitap_adi = forms.CharField(max_length=50,disabled=True)
     
