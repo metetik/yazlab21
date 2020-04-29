@@ -1,6 +1,104 @@
 {% extends 'base.html' %}
 {% block title %}Kullanıcı Listeleme{% endblock title %}
+{% block style %}
+<style>
+    .list-group > .list-group {
+    display: none;
+    margin-bottom: 0;
+    }
+    .list-group-item:focus-within + .list-group {
+    display: block;
+    }
+
+    .list-group > .list-group-item {
+    border-radius: 0;
+    border-width: 1px 0 0 0;
+    }
+
+    .list-group > .list-group-item:first-child {
+    border-top-width: 0;
+    }
+
+    .list-group  > .list-group > .list-group-item {
+    padding-left: 2.5rem;
+    }
+    
+    a.list-group-item {
+    color : gray;
+    }
+</style>
+{% endblock style %}
 {% block body %}
     {% include 'includes/navbar.html' %}
-    <h1>Kullanıcı Listeleme<h1>
+    <h1>Kullanıcı Listeleme</h1>
+    <div class="container">
+        <div class="row justify-content-center align-items-cente">
+            <di class="col-md-6" >
+                <div class="col-md-12">
+                    <div class="list-group">
+                    {% for kullanici in kullanicilar %}
+                        <a href="#" class="list-group-item text-decoration-none" style = >{{kullanici.username}}</a>
+                          <div class="list-group">
+                            <table class="table list-group-item">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">id</th>
+                                        <th scope="col">ISBN</th>
+                                        <th scope="col">Kitap Adı</th>
+                                        <th scope="col">Alınma Tarihi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for kitap in kitaplar %}
+                                    {% if kitap.kullanici == kullanici %}
+                                        <tr>
+                                        <th scope="row">{{kitap.id}}</th>
+                                        <td>{{kitap.ISBN}}</td>
+                                        <td>{{kitap.kitap_adi}}</td>
+                                        <td>{{kitap.alinma_tarihi}}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                </tbody>
+                                </table>
+                        </div>
+                    {% endfor %}
+                        
+                        <div class="list-group">
+                            <table class="table list-group-item">
+                                <thead>
+                                    <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">First</th>
+                                    <th scope="col">Last</th>
+                                    <th scope="col">Handle</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                    <th scope="row">1</th>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                    </tr>
+                                    <tr>
+                                    <th scope="row">2</th>
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>@fat</td>
+                                    </tr>
+                                    <tr>
+                                    <th scope="row">3</th>
+                                    <td>Larry</td>
+                                    <td>the Bird</td>
+                                    <td>@twitter</td>
+                                    </tr>
+                                </tbody>
+                                </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock body %}

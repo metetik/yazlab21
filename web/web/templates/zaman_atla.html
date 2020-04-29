@@ -1,6 +1,21 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 {% block title %}Zaman Atla{% endblock title %}
 {% block body %}
     {% include 'includes/navbar.html' %}
-    <h1>Zaman Atla<h1>
+    <div class="container">
+        <div class="row justify-content-center align-items-cente">
+            <di class="col-md-6" >
+                <div class="col-md-12">
+                    <h1 text-center text-info>Zaman Atla</h1>
+                    <h5>Şu an : {{zaman}}</h5>
+                    <form class="form" method="POST">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <input class="btn btn-primary" type="submit" value="Atla">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock body %}

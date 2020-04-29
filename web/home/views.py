@@ -4,6 +4,12 @@ from .forms import *
 from .models import *
 import logging
 from .functions import resim_oku
+from django.utils import timezone
+import datetime
+import locale
+from django.contrib.auth.models import User
+
+locale.setlocale(locale.LC_ALL, '')
 
 initial = {
     "isbn" : "1",
@@ -30,7 +36,6 @@ def isbn_oku(request):#admin
         form1 = KitapEkleForm1(request.POST or None,request.FILES or None)
         alert = None
         if form1.is_valid():
-            print("a")
             resim_adi = form1.cleaned_data["resim"]
             if resim_adi:
                 isbn = resim_oku(resim_adi.name)
@@ -61,12 +66,32 @@ def kitap_ekle(request):#admin
     return Http404    
 def zaman_atla(request):#admin
     if request.user.is_superuser:
-        return render(request,"zaman_atla.html")
+        tarih = Zaman.objects.get(id=1)
+        yil = datetime.datetime.strftime(tarih.tarih, '%Y') 
+        ay = datetime.datetime.strftime(tarih.tarih, '%B')
+        gun = datetime.datetime.strftime(tarih.tarih, '%d')
+        zaman = gun + " " + ay + " " + yil
+        form = ZamanAtlaForm(request.POST or None)
+
+        if form.is_valid():
+            atlanacak_gun = int(form.cleaned_data["gun"])
+            atlanacak = datetime.timedelta(days=atlanacak_gun)
+            tarih.tarih += atlanacak
+            tarih.save()
+            return redirect("zaman_atla")
+
+        return render(request,"zaman_atla.html",{"zaman" : zaman,"form" : form})
     else:
         return Http404
 def kullanici_listele(request):#admin
     if request.user.is_superuser:
-        return render(request,"kullanici_listele.html")
+        tum_kullanicilar = User.objects.filter(is_superuser=False)
+        kitaplar = Kitap.objects.all()
+        context = {"kullanicilar" : tum_kullanicilar,
+                   "kitaplar" : kitaplar
+                   }
+
+        return render(request,"kullanici_listele.html",context)
     else:
         return Http404
 def kitap_arama(request):#user

@@ -25,4 +25,7 @@ class KitapEkleForm2(forms.Form):
     isbn = forms.CharField(max_length=13,disabled=True,required=False)
     kitap_adi = forms.CharField(max_length=50,required=False)
 
+class ZamanAtlaForm(forms.Form):
+    gun = forms.CharField(max_length=3,label="Atlanacak gün sayısı")
+
     
